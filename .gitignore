@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Node
+node_modules/
+dist/
+.eslintcache
+
+# Logs & temp files
+logs/*.log
+models/*.joblib
+uploads/profile_images/*
+uploads/receipts/*
+uploads/audio/*
+uploads/exports/*
+exports/*
+
+# OS files
+.DS_Store
+Thumbs.db
