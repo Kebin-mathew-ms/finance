@@ -7,11 +7,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "#09090b",
-        card: "#18181b",
+        background: "#030303",
+        card: "#0a0a0c",
         accent: {
-          indigo: "#4f46e5",
-          cyan: "#06b6d4",
+          indigo: "#d4af37",
+          cyan: "#f4d068",
           emerald: "#10b981",
           rose: "#f43f5e",
         }
