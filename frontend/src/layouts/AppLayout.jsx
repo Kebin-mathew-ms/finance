@@ -183,7 +183,7 @@ const AppLayout = () => {
       )}
 
       {/* 2. Sidebar Navigation */}
-      <aside className={`fixed top-0 bottom-0 left-0 z-40 w-64 glass-panel border-r border-white/5 flex flex-col transition-transform duration-300 lg:translate-x-0 lg:static lg:h-screen ${
+      <aside className={`fixed top-0 bottom-0 left-0 z-40 w-64 gold-sidebar flex flex-col transition-transform duration-300 lg:translate-x-0 lg:static lg:h-screen ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         {/* Brand header */}
