@@ -155,6 +155,17 @@ const AudioRecorder = ({ onRecordComplete }) => {
           <span>Recording... tap circle to stop</span>
         </div>
       )}
+
+      {/* Dedicated STOP button — large and unmissable */}
+      {recording && (
+        <button
+          type="button"
+          onClick={stopRecording}
+          style={{ background: '#f43f5e', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px 28px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', letterSpacing: '0.5px' }}
+        >
+          ■ STOP RECORDING
+        </button>
+      )}
     </div>
   );
 };
