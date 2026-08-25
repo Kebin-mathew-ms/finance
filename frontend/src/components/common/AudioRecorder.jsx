@@ -63,7 +63,14 @@ const AudioRecorder = ({ onRecordComplete, onCancel }) => {
       setDuration(0);
       
       timerRef.current = setInterval(() => {
-        setDuration(prev => prev + 1);
+        setDuration(prev => {
+          const next = prev + 1;
+          if (next >= 60) {
+            // Auto-stop after 60 seconds
+            stopRecording();
+          }
+          return next;
+        });
       }, 1000);
 
     } catch (err) {
@@ -123,7 +130,7 @@ const AudioRecorder = ({ onRecordComplete, onCancel }) => {
         }`}>
           {recording ? (
             <div className="flex flex-col items-center">
-              <Square className="h-6 w-6 shrink-0 fill-current" onClick={stopRecording} className="cursor-pointer hover:scale-105 transition" />
+              <Square onClick={stopRecording} className="h-6 w-6 shrink-0 fill-current cursor-pointer hover:scale-105 transition" />
               <span className="text-xs font-bold text-zinc-300 mt-2">{formatDuration(duration)}</span>
             </div>
           ) : (
