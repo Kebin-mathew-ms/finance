@@ -53,14 +53,6 @@ input:-webkit-autofill:focus {
   transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Gold Sidebar Layout */
-.gold-sidebar {
-  background: rgba(22, 18, 5, 0.94);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-right: 1px solid rgba(212, 175, 55, 0.16);
-}
-
 @keyframes spin-reverse {
   to {
     transform: rotate(-360deg);

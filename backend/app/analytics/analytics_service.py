@@ -84,7 +84,7 @@ class AnalyticsService:
         health_record = self.db.query(FinancialHealthScore).filter(
             FinancialHealthScore.user_id == user_id
         ).first()
-        health_score = health_record.score if health_record else 70 # Default clean score
+        health_score = health_record.score if health_record else 0  # No data yet for new users
 
         return {
             "total_income": float(m_income),

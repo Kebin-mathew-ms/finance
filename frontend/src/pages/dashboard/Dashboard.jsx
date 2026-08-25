@@ -29,7 +29,7 @@ const Dashboard = () => {
     goal_completion_rate: 0,
     active_reminders: 0,
     predicted_monthly_expenditure: 0,
-    financial_health_score: 70
+    financial_health_score: 0
   });
 
   const [trends, setTrends] = useState([]);

@@ -91,8 +91,8 @@ class ExpensePredictor:
             
             return {
                 "category": category,
-                "predicted_amount": float(avg_val) if avg_val else 100.0,
-                "confidence_score": 50.0,
+                "predicted_amount": float(avg_val) if avg_val else 0.0,  # 0 for new users with no data
+                "confidence_score": 0.0,
                 "model_used": "simple_moving_average",
                 "prediction_date": next_month_date
             }

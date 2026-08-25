@@ -6,7 +6,7 @@ import Card from '../../components/common/Card';
 
 const FinancialHealth = () => {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState({ score: 70, status: "GOOD" });
+  const [data, setData] = useState({ score: 0, status: "NOT_RATED" });
   const [recs, setRecs] = useState([]);
 
   useEffect(() => {

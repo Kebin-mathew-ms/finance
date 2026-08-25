@@ -2,9 +2,16 @@ import React from 'react';
 import { Award, AlertTriangle, ShieldAlert, CheckCircle } from 'lucide-react';
 import Card from './Card';
 
-const HealthScoreCard = ({ score = 70, status = "GOOD" }) => {
+const HealthScoreCard = ({ score = 0, status = "NOT_RATED" }) => {
   const getStatusConfig = (val, state) => {
-    if (state === "CRITICAL" || val <= 25) {
+    if (val === 0 || state === "NOT_RATED") {
+      return {
+        color: "text-zinc-400 border-zinc-700 bg-zinc-800/40",
+        barColor: "bg-zinc-600",
+        icon: Award,
+        description: "No financial data yet. Add income and expenses to get your personalised financial health rating."
+      };
+    } else if (state === "CRITICAL" || val <= 25) {
       return {
         color: "text-accent-rose border-accent-rose/20 bg-accent-rose/5",
         barColor: "bg-accent-rose",
