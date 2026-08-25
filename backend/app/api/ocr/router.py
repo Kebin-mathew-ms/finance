@@ -15,6 +15,45 @@ from app.schemas.receipt import ReceiptResponse, ReceiptCreate
 
 router = APIRouter()
 
+@router.get("", response_model=None)
+def get_receipt_history(
+    page: int = Query(1, ge=1, description="Page number"),
+    size: int = Query(10, ge=1, le=100, description="Items per page"),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Returns paginated list of scanned receipts for the current user."""
+    offset = (page - 1) * size
+    total = db.query(Receipt).filter(Receipt.user_id == current_user.user_id).count()
+    receipts = (
+        db.query(Receipt)
+        .filter(Receipt.user_id == current_user.user_id)
+        .order_by(Receipt.created_at.desc())
+        .offset(offset)
+        .limit(size)
+        .all()
+    )
+    return {
+        "total_count": total,
+        "page": page,
+        "size": size,
+        "pages": (total + size - 1) // size,
+        "items": [
+            {
+                "receipt_id": r.receipt_id,
+                "merchant_name": r.merchant_name,
+                "transaction_date": r.transaction_date,
+                "total_amount": float(r.total_amount),
+                "tax_amount": float(r.tax_amount) if r.tax_amount else None,
+                "currency": r.currency,
+                "confidence_score": float(r.confidence_score) if r.confidence_score else None,
+                "image_path": r.image_path,
+                "expense_id": r.expense_id,
+                "created_at": r.created_at
+            } for r in receipts
+        ]
+    }
+
 @router.post("/upload")
 async def upload_receipt_file(
     file: UploadFile = File(...),
