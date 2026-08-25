@@ -98,41 +98,60 @@ class OCRService:
                 merchant = merchant[:100]
 
         # 2. Parse Transaction Date
-        # Regex matching: YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, DD-MM-YYYY
+        # Regex matching: YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, DD-MM-YY, "25 Aug 2026", "Aug 25, 2026"
         date_patterns = [
-            r'(\d{4})[-/](\d{2})[-/](\d{2})',  # YYYY-MM-DD
-            r'(\d{2})[-/](\d{2})[-/](\d{4})',  # DD/MM/YYYY
-            r'(\d{2})[-/](\d{2})[-/](\d{2})'   # DD/MM/YY
+            r'(\d{4})[-/](\d{2})[-/](\d{2})',              # YYYY-MM-DD
+            r'(\d{2})[-/](\d{2})[-/](\d{4})',              # DD/MM/YYYY or MM/DD/YYYY
+            r'(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*[\s,]+(\d{4})',  # 25 Aug 2026
+            r'(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*[\s,]+(\d{1,2})[\s,]+(\d{4})',  # Aug 25, 2026
+            r'(\d{2})[-/](\d{2})[-/](\d{2})'              # DD/MM/YY
         ]
-        
+        MONTH_MAP = {"jan":1,"feb":2,"mar":3,"apr":4,"may":5,"jun":6,
+                     "jul":7,"aug":8,"sep":9,"oct":10,"nov":11,"dec":12}
+
         tx_date = None
         for pattern in date_patterns:
-            match = re.search(pattern, text)
+            match = re.search(pattern, text, re.IGNORECASE)
             if match:
-                g1, g2, g3 = match.groups()
+                g1, g2, g3 = match.group(1), match.group(2), match.group(3)
                 try:
-                    if len(g1) == 4:  # YYYY-MM-DD
-                        tx_date = date(int(g1), int(g2), int(g3))
-                    elif len(g3) == 4:  # DD/MM/YYYY
-                        # We guess MM/DD/YYYY vs DD/MM/YYYY: let's assume standard ISO or logical constraints
-                        day = int(g1)
-                        month = int(g2)
+                    # Named-month formats
+                    if g1.isalpha():
+                        # "Aug 25, 2026" format
+                        month = MONTH_MAP.get(g1[:3].lower())
+                        day = int(g2)
                         year = int(g3)
-                        if month > 12:  # Switch roles
-                            day, month = month, day
-                        tx_date = date(year, month, day)
-                    else: # YY
-                        year = 2000 + int(g3)
+                    elif g2.isalpha():
+                        # "25 Aug 2026" format
                         day = int(g1)
-                        month = int(g2)
+                        month = MONTH_MAP.get(g2[:3].lower())
+                        year = int(g3)
+                    elif len(g1) == 4:
+                        # YYYY-MM-DD
+                        year, month, day = int(g1), int(g2), int(g3)
+                    elif len(g3) == 4:
+                        # DD/MM/YYYY — swap month/day if month > 12
+                        day, month, year = int(g1), int(g2), int(g3)
                         if month > 12:
                             day, month = month, day
-                        tx_date = date(year, month, day)
+                    else:
+                        # DD/MM/YY — 2-digit year
+                        day, month = int(g1), int(g2)
+                        year = 2000 + int(g3)
+                        if month > 12:
+                            day, month = month, day
+
+                    # Sanity check: year must be plausible (2000–2100)
+                    if not (2000 <= year <= 2100):
+                        continue
+                    if not (1 <= month <= 12):
+                        continue
+                    tx_date = date(year, month, day)
                     break
-                except ValueError:
+                except (ValueError, TypeError):
                     continue
 
-        # If no date found, fallback to current date
+        # If no valid date found, fallback to current date
         if not tx_date:
             tx_date = date.today()
 
