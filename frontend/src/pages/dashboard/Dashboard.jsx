@@ -84,7 +84,7 @@ const Dashboard = () => {
       </div>
 
       {/* 1. Health Score Section */}
-      <HealthScoreCard score={dashStats.financial_health_score} status={dashStats.financial_health_score <= 25 ? 'CRITICAL' : (dashStats.financial_health_score <= 50 ? 'POOR' : (dashStats.financial_health_score <= 75 ? 'GOOD' : 'EXCELLENT'))} />
+      <HealthScoreCard score={dashStats.financial_health_score} status={dashStats.financial_health_score === 0 ? 'NOT_RATED' : (dashStats.financial_health_score <= 25 ? 'CRITICAL' : (dashStats.financial_health_score <= 50 ? 'POOR' : (dashStats.financial_health_score <= 75 ? 'GOOD' : 'EXCELLENT')))} />
 
       {/* 2. Key Metrics Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

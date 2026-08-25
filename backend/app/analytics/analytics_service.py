@@ -11,7 +11,6 @@ from app.models.expense import Expense
 from app.models.budget import Budget
 from app.models.savings_goal import SavingsGoal
 from app.models.reminder import Reminder
-from app.models.health_score import FinancialHealthScore
 
 class AnalyticsService:
     def __init__(self, db: Session):
@@ -80,11 +79,11 @@ class AnalyticsService:
             res = predictor.predict_next_month_expense(user_id, cat)
             predicted_exp += res["predicted_amount"]
 
-        # 8. Financial Health Score
-        health_record = self.db.query(FinancialHealthScore).filter(
-            FinancialHealthScore.user_id == user_id
-        ).first()
-        health_score = health_record.score if health_record else 0  # No data yet for new users
+        # 8. Financial Health Score — calculate on-demand and persist
+        from app.ai.utils.health_calculator import FinancialHealthCalculator
+        calc = FinancialHealthCalculator(self.db)
+        health_record = calc.update_user_health_score(user_id)
+        health_score = health_record.score
 
         return {
             "total_income": float(m_income),
