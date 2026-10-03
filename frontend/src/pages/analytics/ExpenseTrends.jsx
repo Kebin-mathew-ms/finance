@@ -22,36 +22,19 @@ const ExpenseTrends = () => {
     const fetchTrendsData = async () => {
       setLoading(true);
       try {
-        const [trendsRes, metricsRes] = await Promise.all([
-          apiClient.get('/analytics/trends'),
-          apiClient.get('/analytics/dashboard') // Let's pull stats counters
-        ]);
-
-        setTrends(trendsRes.data || []);
-        
-        // Fetch specific metrics
-        const metricsRes2 = await apiClient.get('/analytics/trends'); // backup
-        
-        // Wait, let's query advanced metrics endpoint
-        const detailsRes = await apiClient.get('/api/v1/analytics/dashboard'); // fallback
-        
-        // Wait, we defined get_metrics in analytics_service, but did we expose an endpoint for it?
-        // Ah! In analytics router, we registered:
-        // /dashboard, /trends, /categories, /cashflow, /health-score
-        // Let's call /trends to calculate some metrics locally in React, or let's use dashboard stats!
-        // DashStats contains: total_income, total_expenses, monthly_savings, budget_utilization
-        // Let's compute average daily and monthly stats dynamically from the trends array!
-        // That is extremely robust because it doesn't depend on unexposed endpoints!
+        const trendsRes = await apiClient.get('/analytics/trends');
         const trendData = trendsRes.data || [];
+        setTrends(trendData);
+
         const avg_exp = trendData.length > 0 ? (trendData.reduce((acc, curr) => acc + curr.expenses, 0) / trendData.length) : 0;
         const avg_inc = trendData.length > 0 ? (trendData.reduce((acc, curr) => acc + curr.income, 0) / trendData.length) : 0;
-        const avg_sav_rate = avg_inc > 0 ? ((avg_inc - avg_exp) / avg_inc * 100) : 0;
+        const avg_sav_rate = avg_inc > 0 ? Math.max(0, (avg_inc - avg_exp) / avg_inc * 100) : 0;
 
         setMetrics({
           average_monthly_spending: avg_exp,
           average_savings_rate: avg_sav_rate,
           average_daily_expense: avg_exp / 30.0,
-          most_expensive_category: "Food", // placeholder fallback
+          most_expensive_category: "Food",
           highest_monthly_expense: trendData.length > 0 ? Math.max(...trendData.map(d => d.expenses)) : 0,
           highest_monthly_income: trendData.length > 0 ? Math.max(...trendData.map(d => d.income)) : 0
         });
@@ -63,6 +46,7 @@ const ExpenseTrends = () => {
       }
     };
     fetchTrendsData();
+  }, []);
   }, []);
 
   if (loading) {
