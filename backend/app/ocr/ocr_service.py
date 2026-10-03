@@ -1,3 +1,4 @@
+import os
 import re
 import cv2
 import numpy as np
@@ -10,6 +11,16 @@ from decimal import Decimal
 from typing import Tuple, Optional, Dict, Any
 
 logger = logging.getLogger("ocr")
+
+# Auto-detect Tesseract OCR path on Windows if not already in system PATH
+tesseract_windows_paths = [
+    r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+    r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe"
+]
+for tpath in tesseract_windows_paths:
+    if os.path.exists(tpath):
+        pytesseract.pytesseract.tesseract_cmd = tpath
+        break
 
 COMMON_MERCHANTS = [
     "Walmart", "McDonald's", "McDonalds", "Starbucks", "Uber", "Amazon", "Target",
