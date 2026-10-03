@@ -18,7 +18,7 @@ EXPENSE_CATEGORIES = {
 class ExpenseBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=150)
     category: str = Field(...)
-    amount: Decimal = Field(..., gt=0, decimal_places=2)
+    amount: Decimal = Field(..., ge=0, decimal_places=2)
     description: Optional[str] = Field(None, max_length=255)
     expense_date: date
 
@@ -35,7 +35,7 @@ class ExpenseCreate(ExpenseBase):
 class ExpenseUpdate(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=150)
     category: Optional[str] = Field(None)
-    amount: Optional[Decimal] = Field(None, gt=0, decimal_places=2)
+    amount: Optional[Decimal] = Field(None, ge=0, decimal_places=2)
     description: Optional[str] = Field(None, max_length=255)
     expense_date: Optional[date] = Field(None)
 
