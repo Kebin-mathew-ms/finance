@@ -103,7 +103,7 @@ class ExpensePredictor:
 
         if model_type == "fallback":
             cat_idx = CATEGORIES.index(category) if category in CATEGORIES else -1
-            avg_val = meta["averages"].get(cat_idx, 100.0)
+            avg_val = meta["averages"].get(cat_idx, 0.0)
             return {
                 "category": category,
                 "predicted_amount": avg_val,
