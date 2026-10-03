@@ -12,6 +12,7 @@ EXPENSE_CATEGORIES = {
     "Shopping",
     "Education",
     "Insurance",
+    "Investment",
     "Other"
 }
 

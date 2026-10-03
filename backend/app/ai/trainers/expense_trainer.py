@@ -61,12 +61,13 @@ class ExpenseModelTrainer:
             avg_income = float(inc_sum)
 
             # Get budget limit for this category/user in that year/month
-            b_limit = self.db.query(Budget.amount_limit).filter(
+            b_row = self.db.query(Budget.amount_limit).filter(
                 Budget.user_id == user_id,
                 Budget.category == cat,
                 Budget.year == yr,
                 Budget.month == mo
-            ).scalar() or Decimal("0.00")
+            ).first()
+            b_limit = b_row[0] if b_row else Decimal("0.00")
             budget_lim = float(b_limit)
 
             # Get total savings up to this year/month

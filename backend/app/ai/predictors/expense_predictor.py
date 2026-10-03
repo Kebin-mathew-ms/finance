@@ -38,18 +38,21 @@ class ExpensePredictor:
         avg_income = float(inc_sum) / 3.0
 
         # 3. Get budget limit set for this category
-        b_limit = self.db.query(Budget.amount_limit).filter(
+        b_limit_row = self.db.query(Budget.amount_limit).filter(
             Budget.user_id == user_id,
             Budget.category == category,
             Budget.year == target_date.year,
             Budget.month == target_date.month
-        ).scalar()
+        ).first()
+        b_limit = b_limit_row[0] if b_limit_row else None
+
         if not b_limit:
             # Fall back to latest month budget limit if not defined yet
-            b_limit = self.db.query(Budget.amount_limit).filter(
+            b_limit_row = self.db.query(Budget.amount_limit).filter(
                 Budget.user_id == user_id,
                 Budget.category == category
-            ).order_by(Budget.year.desc(), Budget.month.desc()).scalar()
+            ).order_by(Budget.year.desc(), Budget.month.desc()).first()
+            b_limit = b_limit_row[0] if b_limit_row else None
         budget_lim = float(b_limit) if b_limit else 0.0
 
         # 4. Total current savings
