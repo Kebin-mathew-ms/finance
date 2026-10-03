@@ -47,7 +47,6 @@ const ExpenseTrends = () => {
     };
     fetchTrendsData();
   }, []);
-  }, []);
 
   if (loading) {
     return (
