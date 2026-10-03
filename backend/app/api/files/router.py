@@ -10,8 +10,12 @@ from app.storage.storage_provider import get_storage_provider
 router = APIRouter()
 
 # Validation parameters
-ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".pdf", ".wav", ".mp3"}
-ALLOWED_MIMETYPES = {"image/jpeg", "image/png", "application/pdf", "audio/wav", "audio/x-wav", "audio/mpeg", "audio/mp3"}
+ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".pdf", ".wav", ".mp3", ".webm", ".ogg", ".m4a"}
+ALLOWED_MIMETYPES = {
+    "image/jpeg", "image/png", "application/pdf",
+    "audio/wav", "audio/x-wav", "audio/mpeg", "audio/mp3",
+    "audio/webm", "audio/webm;codecs=opus", "audio/ogg", "audio/m4a", "audio/mp4", "audio/x-m4a"
+}
 
 SIZE_LIMITS = {
     "image": 5 * 1024 * 1024,  # 5 MB
@@ -24,7 +28,7 @@ def get_file_category(extension: str) -> str:
         return "image"
     elif extension == ".pdf":
         return "pdf"
-    elif extension in {".wav", ".mp3"}:
+    elif extension in {".wav", ".mp3", ".webm", ".ogg", ".m4a"}:
         return "audio"
     return "other"
 
