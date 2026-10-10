@@ -152,8 +152,9 @@ class OCRService:
                         if month > 12:
                             day, month = month, day
 
-                    # Sanity check: year must be plausible (2000–2100)
-                    if not (2000 <= year <= 2100):
+                    # Sanity check: year must be plausible (2015 to next year)
+                    current_year = date.today().year
+                    if not (2015 <= year <= current_year + 1):
                         continue
                     if not (1 <= month <= 12):
                         continue

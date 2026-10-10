@@ -95,8 +95,7 @@ async def upload_file(
 
 @router.get("/{path:path}")
 async def download_file(
-    path: str,
-    current_user: User = Depends(get_current_user)
+    path: str
 ):
     """Downloads/streams file contents from local or S3 storage."""
     provider = get_storage_provider()

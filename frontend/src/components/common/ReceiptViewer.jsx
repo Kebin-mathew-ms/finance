@@ -6,7 +6,9 @@ import { formatCurrency, formatDate } from '../../utils/formatters';
 const ReceiptViewer = ({ isOpen, onClose, receipt }) => {
   if (!receipt) return null;
 
-  const imageUrl = `http://localhost:8000/api/v1/files/${receipt.image_path}`;
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+  const imageUrl = `${API_BASE}/files/${receipt.image_path}`;
+  const staticUrl = `${API_BASE.replace('/api/v1', '')}/uploads/${receipt.image_path}`;
   const confidence = parseFloat(receipt.confidence_score);
 
   return (
@@ -24,7 +26,11 @@ const ReceiptViewer = ({ isOpen, onClose, receipt }) => {
             alt="Receipt Scan" 
             className="max-h-[400px] max-w-full object-contain" 
             onError={(e) => {
-              e.target.src = "https://via.placeholder.com/300x400?text=Receipt+Image+Not+Found";
+              if (e.target.src !== staticUrl) {
+                e.target.src = staticUrl;
+              } else {
+                e.target.src = "https://via.placeholder.com/300x400?text=Receipt+Image+Not+Found";
+              }
             }}
           />
         </div>
