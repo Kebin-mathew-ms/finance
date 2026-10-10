@@ -33,13 +33,6 @@ class ReminderBase(BaseModel):
             raise ValueError(f"Repeat interval must be one of {list(REPEAT_INTERVALS)}")
         return v
 
-    @field_validator("due_date")
-    @classmethod
-    def validate_due_date(cls, v: date) -> date:
-        if v < date.today():
-            raise ValueError("Due date cannot be in the past")
-        return v
-
 class ReminderCreate(ReminderBase):
     pass
 
@@ -64,13 +57,6 @@ class ReminderUpdate(BaseModel):
     def validate_repeat_interval(cls, v: Optional[str]) -> Optional[str]:
         if v is not None and v not in REPEAT_INTERVALS:
             raise ValueError(f"Repeat interval must be one of {list(REPEAT_INTERVALS)}")
-        return v
-
-    @field_validator("due_date")
-    @classmethod
-    def validate_due_date(cls, v: Optional[date]) -> Optional[date]:
-        if v is not None and v < date.today():
-            raise ValueError("Due date cannot be in the past")
         return v
 
 class ReminderResponse(ReminderBase):

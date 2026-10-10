@@ -29,13 +29,14 @@ class SavingsGoalBase(BaseModel):
     def validate_dates(self) -> "SavingsGoalBase":
         if self.target_date <= self.start_date:
             raise ValueError("Target date must be after the start date")
-        # Target date must be in the future (greater than current date)
-        if self.target_date <= date.today():
-            raise ValueError("Target date must be in the future")
         return self
 
 class SavingsGoalCreate(SavingsGoalBase):
-    pass
+    @model_validator(mode="after")
+    def validate_create_future_date(self) -> "SavingsGoalCreate":
+        if self.target_date <= date.today():
+            raise ValueError("Target date must be in the future")
+        return self
 
 class SavingsGoalUpdate(BaseModel):
     goal_name: Optional[str] = Field(None, min_length=1, max_length=150)
@@ -64,8 +65,6 @@ class SavingsGoalUpdate(BaseModel):
     def validate_dates_update(self) -> "SavingsGoalUpdate":
         if self.start_date and self.target_date and self.target_date <= self.start_date:
             raise ValueError("Target date must be after the start date")
-        if self.target_date and self.target_date <= date.today():
-            raise ValueError("Target date must be in the future")
         return self
 
 class SavingsGoalResponse(SavingsGoalBase):
